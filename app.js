@@ -38,6 +38,9 @@ app.post('/add', function(req, res) {
 	});
 });
 
+app.get('/books/all', function(req, res) {
+	res.render('all_books');
+});
 sequelize.sync().then(function() {
 	app.listen(3000, function() {
 		console.log('Server running at port 3000');
