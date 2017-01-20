@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title New Book
+    link(rel='stylesheet', href='stylesheets/style.css')
+  nav
+    ul
+      li
+        a(href='all_books.html') Books
+      li
+        a(href='all_patrons.html') Patrons
+      li
+        a(href='all_loans.html') Loans
+  body
+    h1 New Book
+    form(method='POST', action='/add')
+      p
+        label(for='title') Title
+        input#title(name='title', type='text')
+      p
+        label(for='author') Author
+        input#author(name='author', type='text')
+      p
+        label(for='genre') Genre
+        input#genre(name='genre', type='text')
+      p
+        label(for='first_published') First Published
+        input#first_published(name='first_published', type='text')
+      p
+        input(type='submit', value='Create New Book')
