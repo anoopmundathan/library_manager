@@ -28,19 +28,40 @@ app.get('/', function(req, res) {
 	res.render('home');
 });
 
+app.get('/books/all', function(req, res) {
+	res.render('all_books');
+});
+
 app.get('/books/new', function(req, res) {
 	res.render('new_book');
 });
 
-app.post('/add', function(req, res) {
+app.post('books/add', function(req, res) {
 	Books.create(req.body).then(function() {
 		res.redirect('/');
 	});
 });
 
-app.get('/books/all', function(req, res) {
-	res.render('all_books');
+///////
+app.get('/loans/all', function(req, res) {
+	res.render('all_loans');
 });
+
+app.get('/loans/new', function(req, res) {
+	res.render('new_loan');
+});
+
+//////
+app.get('/patrons/all', function(req, res) {
+	res.render('all_patrons');
+});
+
+app.get('/patrons/new', function(req, res) {
+	res.render('new_patron');
+});
+
+////
+
 sequelize.sync().then(function() {
 	app.listen(3000, function() {
 		console.log('Server running at port 3000');
