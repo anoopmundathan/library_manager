@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var sequelize = require('./models').sequelize;
 
 var books = require('./routes/books');
+var patrons = require('./routes/patrons');
 
 var Loans = require('./models').Loans;
 var Patrons = require('./models').Patrons;
@@ -18,6 +19,7 @@ app.set('views', './views');
 app.set('view engine', 'pug');
 
 app.use('/books', books);
+app.use('/patrons', patrons);
 
 // app.get('/', function(req, res) {
 // 	res.render('home');
@@ -33,15 +35,6 @@ app.get('/loans/new', function(req, res) {
 	res.render('new_loan');
 });
 
-// //////
-app.get('/patrons/all', function(req, res) {
-	res.render('all_patrons');
-});
-
-app.get('/patrons/new', function(req, res) {
-	res.render('new_patron');
-});
-////
 
 sequelize.sync({
 	force: true
