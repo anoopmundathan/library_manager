@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     book_id: DataTypes.INTEGER,
     patron_id: DataTypes.INTEGER,
     loaned_on: DataTypes.DATE,
-    returned_by: DataTypes.DATE,
+    return_by: DataTypes.DATE,
     returned_on: DataTypes.DATE
   }, {
     classMethods: {
