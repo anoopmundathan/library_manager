@@ -19,17 +19,15 @@ app.use(bodyParser.json());
 app.set('views', './views');
 app.set('view engine', 'pug');
 
+app.get('/', function(req, res) {
+	res.render('home');
+});
+
 app.use('/books', books);
 app.use('/patrons', patrons);
 app.use('/loans', loans);
 
-// app.get('/', function(req, res) {
-// 	res.render('home');
-// });
-
-sequelize.sync({
-	force: true
-}).then(function() {
+sequelize.sync({}).then(function() {
 	app.listen(3000, function() {
 		console.log('Server running at port 3000');
 	});
