@@ -3,15 +3,14 @@ var Patrons = require('../models').Patrons;
 
 var router = express.Router();
 
-router.get('/', function(req, res) {
+router.get('/all', function(req, res) {
 	Patrons.findAll().then(function() {
-		console.log('Patrons');
+		res.render('all_patrons');
 	});
-	res.send('Patrons All route');
 });
 
 router.get('/new', function(req, res) {
-	res.send('Patrons New');
+	res.render('new_patron');
 });
 
 module.exports = router;

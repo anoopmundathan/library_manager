@@ -1,33 +1,30 @@
-doctype html
-html
-  head
-    title Patrons
-    link(rel='stylesheet', href='stylesheets/style.css')
-  nav
-    ul
-      li
-        a(href='all_books.html') Books
-      li
-        a(href='all_patrons.html') Patrons
-      li
-        a(href='all_loans.html') Loans
-  body
-    h1 Patrons
-    p
-      a.button(href='new_patron.html') Create New Patron
-    table
-      thead
-        tr
-          th Name 
-          th Address
-          th Email
-          th Library ID
-          th Zip
-      tbody
-        tr
-          td
-            a(href='patron_detail.html') Andrew Chalkley
-          td 1234 NE 20st St
-          td andrew.chalkley@teamtreehouse.com
-          td MCL1001
-          td 90210
+extends layout
+block content
+    nav
+      ul
+        li
+          a(href='all_books.html') Books
+        li
+          a(href='all_patrons.html') Patrons
+        li
+          a(href='all_loans.html') Loans
+    body
+      h1 Patrons
+      p
+        a.button(href='new_patron.html') Create New Patron
+      table
+        thead
+          tr
+            th Name 
+            th Address
+            th Email
+            th Library ID
+            th Zip
+        tbody
+          tr
+            td
+              a(href='patron_detail.html') Andrew Chalkley
+            td 1234 NE 20st St
+            td andrew.chalkley@teamtreehouse.com
+            td MCL1001
+            td 90210
