@@ -10,18 +10,21 @@ block content
           a(href='all_loans.html') Loans
     body
       h1 New Book
+
+      include errors
+
       form(method='POST', action='/books/add')
         p
           label(for='title') Title
-          input#title(name='title', type='text')
+          input#title(name='title', type='text', value=book.title)
         p
           label(for='author') Author
-          input#author(name='author', type='text')
+          input#author(name='author', type='text', value=book.author)
         p
           label(for='genre') Genre
-          input#genre(name='genre', type='text')
+          input#genre(name='genre', type='text', value=book.genre)
         p
           label(for='first_published') First Published
-          input#first_published(name='first_published', type='text')
+          input#first_published(name='first_published', type='text', value=book.first_published)
         p
           input(type='submit', value='Create New Book')
