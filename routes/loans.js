@@ -12,4 +12,12 @@ router.get('/new', function(req, res) {
 	res.render('new_loan');
 });
 
+router.get('/overdue', function(req, res) {
+	res.render('overdue_loans');
+});
+
+router.get('/checked', function(req, res) {
+	res.render('checked_loans');
+});
+
 module.exports = router;
