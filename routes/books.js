@@ -19,16 +19,21 @@ router.get('/:filter', function(req, res) {
 
 router.post('/add', function(req, res) {
 	Books.create(req.body).then(function(book) {
-		res.render('book_detail');
+		res.render('book_detail', {
+			book: book
+		});
 	}).catch(function(err) {
-		console.log(err.name);
 		if(err.name === "SequelizeValidationError") {
 			res.render('new_book', {
 				book: Books.build(req.body),
 				errors: err.errors
 			});
+		} else {
+			throw err;
 		}
-	});
+	}).catch(function(err) {
+		res.send(500);
+	})
 });
 
 module.exports = router;
