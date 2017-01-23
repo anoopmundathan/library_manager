@@ -30,9 +30,11 @@ app.use('/books', books);
 app.use('/patrons', patrons);
 app.use('/loans', loans);
 
-sequelize.sync().then(function() {
+sequelize.sync({
+	force : true
+}).then(function() {
 	app.listen(app.get('port'), function() {
-		console.log('Server Running at port' + app.get('port'));
+		console.log('Server Running at port ' + app.get('port'));
 	});
 });
 

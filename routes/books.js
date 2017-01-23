@@ -12,8 +12,15 @@ router.get('/new', function(req, res) {
 	res.render('new_book');
 });
 
-router.post('/add', function() {
+router.get('/:filter', function(req, res) {
+	// console.log(req.params.filter);
+	res.render('overdue_books');
+});
 
+router.post('/add', function(req, res) {
+	Books.create(req.body).then(function(book) {
+		res.render('book_detail');
+	});
 });
 
 module.exports = router;
