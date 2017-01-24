@@ -3,7 +3,7 @@ var Patrons = require('../models').Patrons;
 
 var router = express.Router();
 
-router.get('/all', function(req, res) {
+router.get('/', function(req, res) {
 	Patrons.findAll().then(function() {
 		res.render('all_patrons');
 	});

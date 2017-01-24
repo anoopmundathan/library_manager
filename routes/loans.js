@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Loans = require('../models').Loans;
 
-router.get('/all', function(req, res) {
+router.get('/', function(req, res) {
 	Loans.findAll().then(function() {
 		res.render('all_loans');
 	});
