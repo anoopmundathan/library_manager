@@ -2,23 +2,15 @@ var express = require('express');
 var router = express.Router();
 var Books = require('../models').Books;
 
-// 
+// GET /books
 router.get('/', function(req, res) {
 	Books.findAll().then(function(books) {
 		res.render('all_books', {books : books});
 	});
 });
 
-router.get('/new', function(req, res) {
-	res.render('new_book', {book: Books.build()});
-});
-
-router.get('/:filter', function(req, res) {
-	// console.log(req.params.filter);
-	res.render('overdue_books');
-});
-
-router.post('/add', function(req, res) {
+// POST /books
+router.post('/', function(req, res) {
 	Books.create(req.body).then(function(book) {
 		res.render('book_detail', {
 			book: book
@@ -36,5 +28,15 @@ router.post('/add', function(req, res) {
 		res.send(500);
 	})
 });
+
+router.get('/new', function(req, res) {
+	res.render('new_book', {book: Books.build()});
+});
+
+router.get('/:filter', function(req, res) {
+	// console.log(req.params.filter);
+	res.render('overdue_books');
+});
+
 
 module.exports = router;
