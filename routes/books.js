@@ -4,9 +4,16 @@ var Books = require('../models').Books;
 
 // GET /books
 router.get('/', function(req, res) {
-	Books.findAll().then(function(books) {
-		res.render('all_books', {books : books});
-	});
+
+	if(req.query.filter === 'overdue') {
+		res.render('overdue_books');
+	} else if(req.query.filter === 'checked_out') {
+		res.render('checked_books');
+	} else {
+		Books.findAll().then(function(books) {
+			res.render('all_books', {books : books});
+		});	
+	}
 });
 
 // POST /books
@@ -32,11 +39,5 @@ router.post('/', function(req, res) {
 router.get('/new', function(req, res) {
 	res.render('new_book', {book: Books.build()});
 });
-
-router.get('/:filter', function(req, res) {
-	// console.log(req.params.filter);
-	res.render('overdue_books');
-});
-
 
 module.exports = router;
