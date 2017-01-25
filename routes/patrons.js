@@ -9,6 +9,12 @@ router.get('/', function(req, res) {
 	});
 });
 
+router.post('/', function(req, res) {
+	Patrons.create(req.body).then(function(patron) {
+		res.redirect('/patrons');
+	});
+});
+
 router.get('/new', function(req, res) {
 	res.render('new_patron');
 });
