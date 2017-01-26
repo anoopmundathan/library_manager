@@ -23,13 +23,13 @@ router.post('/', function(req, res) {
 		} else {
 			throw err;
 		}
+	}).catch(function(err) {
+		res.send(500);
 	})
 });
 
 router.get('/new', function(req, res) {
-	res.render('new_patron', {
-		patron : Patrons.build()
-	});
+	res.render('new_patron', {patron : Patrons.build()});
 });
 
 module.exports = router;
