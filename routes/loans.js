@@ -1,13 +1,16 @@
 var express = require('express');
 var router = express.Router();
+
+var moment = require('moment');
+
 var Books = require('../models').Books;
 var Patrons = require('../models').Patrons;
 var Loans = require('../models').Loans;
-var moment = require('moment');
 
+// GET request
 router.get('/', function(req, res) {
-	Loans.findAll().then(function() {
-		res.render('all_loans');
+	Loans.findAll().then(function(loans) {
+		res.render('all_loans', {loans: loans});
 	});
 });
 
@@ -18,7 +21,7 @@ router.post('/', function(req, res) {
 	});
 });
 
-
+// GET loans/new
 router.get('/new', function(req, res) {
 	
 	// Create Promise object
@@ -44,7 +47,7 @@ router.get('/new', function(req, res) {
 		
 		/*
 		 * Format date
-		*/
+		 */
 		var loanedOn = moment().format('YYYY-MM-DD');
 		var returnBy = moment().add('7', 'days').format('YYYY-MM-DD');
 
