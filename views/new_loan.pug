@@ -3,23 +3,23 @@ block content
     include nav
     body
       h1 New Loan
-      form
+      form(method='POST', action='/loans')
         p
           label(for='book_id') Book
-          select#book_id
+          select#book_id(name='book_id')
             each book in books
-              option(value=book.id)= book.title
+              option(value=book.id, name='title')= book.title
         p
           label(for='patron_id') Patron
-          select#patron_id
+          select#patron_id(name='patron_id')
             each patron in patrons
-              option(value=patron.id)= patron.first_name + ' ' + patron.last_name
+              option(value=patron.id, name='first_name')= patron.first_name 
           
         p
           label(for='loaned_on') Loaned on:
-          input#loaned_on(type='text', value='Sun May 22 2016 17:00:00 GMT-0700 (PDT)')
+          input#loaned_on(type='text', name='loaned_on', value=loanedOn)
         p
           label(for='return_by') Return by:
-          input#return_by(type='text', value='Sun May 29 2016 17:00:00 GMT-0700 (PDT)')
+          input#return_by(type='text', name='return_by', value=returnBy)
         p
           input(type='submit', value='Create New Loan')
