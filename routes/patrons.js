@@ -13,7 +13,7 @@ router.get('/', function(req, res) {
 
 router.post('/', function(req, res) {
 	Patrons.create(req.body).then(function(patron) {
-		res.render('patron_detail');
+		res.render('patron_detail', {patron : patron});
 	}).catch(function(err) {
 		if(err.name === "SequelizeValidationError") {
 			res.render('new_patron', {
