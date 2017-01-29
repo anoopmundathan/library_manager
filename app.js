@@ -1,8 +1,11 @@
+'use strict';
 var express = require('express');
+var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 var path = require('path');
-var sequelize = require('./models').sequelize;
 
+
+var sequelize = require('./models').sequelize;
 var books = require('./routes/books');
 var patrons = require('./routes/patrons');
 var loans = require('./routes/loans');
@@ -12,6 +15,7 @@ var Patrons = require('./models').Patrons;
 
 var app = express();
 
+app.use(methodOverride('_method'));
 app.set('port', process.env.PORT || 3500);
 
 app.use(express.static(path.join(__dirname, 'public')));

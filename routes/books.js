@@ -3,7 +3,7 @@ var router = express.Router();
 var Books = require('../models').Books;
 
 // GET /books
-router.get('/', function(req, res) {
+router.get('/', function(req, res, next) {
 
 	if(req.query.filter === 'overdue') {
 		res.render('overdue_books');
@@ -17,11 +17,9 @@ router.get('/', function(req, res) {
 });
 
 // POST /books
-router.post('/', function(req, res) {
+router.post('/', function(req, res, next) {
 	Books.create(req.body).then(function(book) {
-		res.render('book_detail', {
-			book: book
-		});
+		res.redirect('/books');
 	}).catch(function(err) {
 		if(err.name === "SequelizeValidationError") {
 			res.render('new_book', {
@@ -36,8 +34,23 @@ router.post('/', function(req, res) {
 	})
 });
 
-router.get('/new', function(req, res) {
+router.get('/new', function(req, res, next) {
 	res.render('new_book', {book: Books.build()});
 });
+
+// GET individual book
+router.get('/:id', function(req, res, next) {
+	Books.findById(req.params.id).then(function(book) {
+		res.render('book_detail', {book: book});
+	});
+});
+
+/* PUT update a book */
+router.put('/:id', function(req, res, next) {
+	// console.log(req.params.id);
+	console.log(req.body);
+	res.send('Updated');
+});
+
 
 module.exports = router;
