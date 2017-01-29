@@ -47,9 +47,11 @@ router.get('/:id', function(req, res, next) {
 
 /* PUT update a book */
 router.put('/:id', function(req, res, next) {
-	// console.log(req.params.id);
-	console.log(req.body);
-	res.send('Updated');
+	Books.findById(req.params.id).then(function(book) {
+		return book.update(req.body);
+	}).then(function() {
+		res.redirect('/');
+	});
 });
 
 
