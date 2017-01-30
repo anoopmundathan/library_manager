@@ -1,14 +1,27 @@
 var express = require('express');
 var router = express.Router();
-var Books = require('../models').Books;
 
+var Books = require('../models').Books;
+var Loans = require('../models').Loans;
 // GET /books
 router.get('/', function(req, res, next) {
 
 	if(req.query.filter === 'overdue') {
 		res.render('overdue_books');
 	} else if(req.query.filter === 'checked_out') {
-		res.render('checked_books');
+		// Loans.belongsTo(Books, {foreignKey: 'book_id'});
+		// Loans.findAll({
+		// 	where: {returned_on: {$eq: null}},
+		// 	attributes: ['patron_id'],
+		// 	include: [{model: Books,required: true}]
+		// }).then(function(loans) {
+		// 	res.render('checked_books', {loans: loans});
+		// });
+		Loans.findAll().then(function(loans) {
+			Books.findAll();
+
+		});
+
 	} else {
 		Books.findAll().then(function(books) {
 			res.render('all_books', {books : books});

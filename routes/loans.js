@@ -24,44 +24,24 @@ router.post('/', function(req, res) {
 // GET loans/new
 router.get('/new', function(req, res) {
 	
-	// Create Promise object
-	var bookDetail = new Promise(function(resolve, reject) {
-		Books.findAll().then(function(books) {
-			resolve(books);
-		}).catch(function(err) {
-			reject(err);
-		});
-	});
-
-	// Create Promise object
-	var patronDetail = new Promise(function(resolve, reject) {
+	Books.findAll().then(function(books) {
 		Patrons.findAll().then(function(patrons) {
-			resolve(patrons);
-		}).catch(function(err) {
-			reject(err);
-		})
-	});
+			var loanedOn = moment().format('YYYY-MM-DD');
+			var returnBy = moment().add('7', 'days').format('YYYY-MM-DD');
 
-	// Render only if both Promise resolve
-	Promise.all([bookDetail, patronDetail]).then(function(data) {
-		
-		/*
-		 * Format date
-		 */
-		var loanedOn = moment().format('YYYY-MM-DD');
-		var returnBy = moment().add('7', 'days').format('YYYY-MM-DD');
-
-		res.render('new_loan', 
+			res.render('new_loan', 
 			{
-				books : data[0], 
-				patrons: data[1], 
+				books : books, 
+				patrons: patrons, 
 				loanedOn: loanedOn,
 				returnBy: returnBy
 			});
-	}).catch(function(error) {
-		// Error
-	});
 
+		}).catch(function(err) {
+
+		});
+	});
+	
 });
 
 router.get('/overdue', function(req, res) {
