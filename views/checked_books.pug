@@ -23,7 +23,7 @@ block content
         each loan in loans
           tr
             td
-              a(href='book_detail.html')= loan.Book.title
+              a(href="/books/" + loan.Book.id)= loan.Book.title
             td= loan.Book.author
             td= loan.Book.genre
             td= loan.Book.first_published

@@ -9,9 +9,9 @@ block content
       | Filters 
       a(href='/books') All
       |  
-      a(href='/books?filter?=overdue') Overdue
+      a(href='/books?filter=overdue') Overdue
       |  
-      a(href='/books?filter?=checked_out') Checked Out
+      a(href='/books?filter=checked_out') Checked Out
     table
       thead
         tr
@@ -23,7 +23,7 @@ block content
         each loan in loans
           tr
             td
-              a(href='book_detail.html')= loan.Book.title
+              a(href="/books/" + loan.Book.id)= loan.Book.title
             td= loan.Book.author
             td= loan.Book.genre
             td= loan.Book.first_published
