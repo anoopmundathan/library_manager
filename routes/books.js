@@ -9,19 +9,17 @@ router.get('/', function(req, res, next) {
 	if(req.query.filter === 'overdue') {
 		res.render('overdue_books');
 	} else if(req.query.filter === 'checked_out') {
-		// Loans.belongsTo(Books, {foreignKey: 'book_id'});
-		// Loans.findAll({
-		// 	where: {returned_on: {$eq: null}},
-		// 	attributes: ['patron_id'],
-		// 	include: [{model: Books,required: true}]
-		// }).then(function(loans) {
-		// 	res.render('checked_books', {loans: loans});
-		// });
-		Loans.findAll().then(function(loans) {
-			Books.findAll();
-
+		/*
+		 * SELECT * FROM LOANS A INNER JOIN BOOKS B ON A.BOOK_ID = B.ID 
+		 * WHERE A.RETURNED_ON IS NULL;
+		*/
+		Loans.belongsTo(Books, {foreignKey: 'book_id'});
+		Loans.findAll({
+			where: {returned_on: {$eq: null}},
+			include: [{model: Books, required: true}]
+		}).then(function(loans) {
+			res.render('checked_books', {loans: loans});
 		});
-
 	} else {
 		Books.findAll().then(function(books) {
 			res.render('all_books', {books : books});
