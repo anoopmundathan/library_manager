@@ -3,11 +3,24 @@ var router = express.Router();
 
 var Books = require('../models').Books;
 var Loans = require('../models').Loans;
+
 // GET /books
 router.get('/', function(req, res, next) {
 
 	if(req.query.filter === 'overdue') {
-		res.render('overdue_books');
+		/*
+		 * SELECT * FROM LOANS A INNER JOIN BOOKS B ON
+		 * A.BOOK_ID = B.ID WHERE A.RETURN_BY < "TODAYS' DATE" AND
+		 * A.RETURNED_ON IS NULL
+		*/
+		Loans.belongsTo(Books, {foreignKey: 'book_id'});
+		Loans.findAll({
+			where: {returned_on: {$eq: null}, return_by: {$lt: new Date()}},
+			include: [{model: Books, required: true}]
+		}).then(function(loans) {
+			res.render('overdue_books', {loans: loans});
+		});
+
 	} else if(req.query.filter === 'checked_out') {
 		/*
 		 * SELECT * FROM LOANS A INNER JOIN BOOKS B ON A.BOOK_ID = B.ID 
