@@ -4,7 +4,7 @@ block content
     body
       h1 Loans
       p
-        a.button(href='new_loan.html') Create New Loan
+        a.button(href='/loans/new') Create New Loan
       p
         | Filters 
         a(href='all_loans.html') All
@@ -25,9 +25,9 @@ block content
           each loan in loans
             tr
               td
-                a(href='book_detail.html')= loan.book_id
+                a(href='book_detail.html')= loan.Book.title
               td
-                a(href='patron_detail.html')= loan.patron_id
+                a(href='patron_detail.html')= loan.Patron.first_name
               td= loan.loaned_on
               td= loan.return_by
               td

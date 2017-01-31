@@ -9,7 +9,17 @@ var Loans = require('../models').Loans;
 
 // GET request
 router.get('/', function(req, res) {
-	Loans.findAll().then(function(loans) {
+
+	Loans.belongsTo(Books, {foreignKey: 'book_id'});
+	Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
+
+	Loans.findAll({
+		order: [['createdAt', 'DESC']],
+		include: [
+				  {model: Books,required: true}, 
+				  {model: Patrons,required: true}
+				 ]
+	}).then(function(loans) {
 		res.render('all_loans', {loans: loans});
 	});
 });
@@ -17,7 +27,7 @@ router.get('/', function(req, res) {
 // POST request 
 router.post('/', function(req, res) {
 	Loans.create(req.body).then(function(loan) {
-		res.send('Posted');
+		res.redirect('/loans');
 	});
 });
 
