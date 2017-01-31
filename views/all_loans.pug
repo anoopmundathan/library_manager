@@ -25,9 +25,9 @@ block content
           each loan in loans
             tr
               td
-                a(href='book_detail.html')= loan.Book.title
+                a(href="/books/" + loan.Book.id)= loan.Book.title
               td
-                a(href='patron_detail.html')= loan.Patron.first_name
+                a(href="patrons/" + loan.Patron.id)= loan.Patron.first_name
               td= loan.loaned_on
               td= loan.return_by
               td

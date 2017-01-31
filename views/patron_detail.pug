@@ -2,7 +2,7 @@ extends layout
 block content
   include nav
   body
-    h1 Patron: patron.first_name + ' ' + patron.last_name
+    h1= 'Patron : ' + patron.first_name + ' ' + patron.last_name
     form
       p
         label(for='first_name') First Name

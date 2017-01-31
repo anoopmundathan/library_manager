@@ -41,7 +41,9 @@ router.get('/', function(req, res, next) {
 			res.render('checked_books', {loans: loans});
 		});
 	} else {
-		Books.findAll().then(function(books) {
+		Books.findAll({
+			order: [['updatedAt', 'DESC']]
+		}).then(function(books) {
 			res.render('all_books', {books : books});
 		});	
 	}
@@ -115,7 +117,7 @@ router.put('/:id', function(req, res, next) {
 	Books.findById(req.params.id).then(function(book) {
 		return book.update(req.body);
 	}).then(function() {
-		res.redirect('/');
+		res.redirect('/books');
 	});
 });
 
