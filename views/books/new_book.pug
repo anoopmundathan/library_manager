@@ -1,10 +1,10 @@
-extends layout
+extends ../layout
 block content
-    include nav
+    include ../nav
     body
       h1 New Book
 
-      include errors
+      include ../errors
 
       form(method='POST', action='/books')
         p

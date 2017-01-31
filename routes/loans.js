@@ -30,7 +30,7 @@ router.get('/', function(req, res, next) {
 				  		{model: Patrons,required: true}
 				 	]
 		}).then(function(data) {
-			res.render('overdue_loans', {loans: data});
+			res.render('loans/overdue_loans', {loans: data});
 		});
 	} else if(req.query.filter === 'checked_out') {
 		/*
@@ -49,7 +49,7 @@ router.get('/', function(req, res, next) {
 				  		{model: Patrons,required: true}
 				 	]
 		}).then(function(data) {
-			res.render('checked_loans', {loans: data});
+			res.render('loans/checked_loans', {loans: data});
 		});
 	} else {
 		Loans.findAll({
@@ -59,7 +59,7 @@ router.get('/', function(req, res, next) {
 				  		{model: Patrons,required: true}
 				 	]
 		}).then(function(loans) {
-			res.render('all_loans', {loans: loans});
+			res.render('loans/all_loans', {loans: loans});
 		});
 	}	
 });
@@ -72,7 +72,7 @@ router.get('/new', function(req, res, next) {
 			var loanedOn = moment().format('YYYY-MM-DD');
 			var returnBy = moment().add('7', 'days').format('YYYY-MM-DD');
 
-			res.render('new_loan', 
+			res.render('loans/new_loan', 
 			{
 				books : books, 
 				patrons: patrons, 
@@ -104,7 +104,7 @@ router.get('/:id', function(req, res, next) {
 				  		{model: Patrons,required: true}
 				 	 ]
 		}).then(function(data) {
-			res.render('return_book', {loan: data});
+			res.render('loans/return_book', {loan: data});
 		});
 });
 

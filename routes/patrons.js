@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 	Patrons.findAll({
 		order: [['createdAt', 'DESC']],
 	}).then(function(patrons) {
-		res.render('all_patrons', {
+		res.render('patrons/all_patrons', {
 			patrons: patrons
 		});
 	});
@@ -23,7 +23,7 @@ router.post('/', function(req, res, next) {
 		res.redirect('/patrons');
 	}).catch(function(err) {
 		if(err.name === "SequelizeValidationError") {
-			res.render('new_patron', {
+			res.render('patrons/new_patron', {
 				patron: Patrons.build(req.body),
 				errors: err.errors
 			});
@@ -37,7 +37,7 @@ router.post('/', function(req, res, next) {
 
 // GET new book route
 router.get('/new', function(req, res, next) {
-	res.render('new_patron', {patron : Patrons.build()});
+	res.render('patrons/new_patron', {patron : Patrons.build()});
 });
 
 // GET individual patron
@@ -68,7 +68,7 @@ router.get('/:id', function(req, res, next) {
 				patron_id: req.params.id
 			}
 		}).then(function(data) {
-			res.render('patron_detail', {patron: patron, loans: data});
+			res.render('patrons/patron_detail', {patron: patron, loans: data});
 		});
 		
 	});

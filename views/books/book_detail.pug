@@ -1,6 +1,6 @@
-extends layout
+extends ../layout
 block content
-  include nav
+  include ../nav
   body
     h1= 'Book : ' + book.title
     form(action="/books/" + book.id + "?_method=PUT" , method="post")

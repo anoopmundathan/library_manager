@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
 			where: {returned_on: {$eq: null}, return_by: {$lt: new Date()}},
 			include: [{model: Books, required: true}]
 		}).then(function(loans) {
-			res.render('overdue_books', {loans: loans});
+			res.render('books/overdue_books', {loans: loans});
 		});
 
 	} else if(req.query.filter === 'checked_out') {
@@ -38,13 +38,13 @@ router.get('/', function(req, res, next) {
 			where: {returned_on: {$eq: null}},
 			include: [{model: Books, required: true}]
 		}).then(function(loans) {
-			res.render('checked_books', {loans: loans});
+			res.render('books/checked_books', {loans: loans});
 		});
 	} else {
 		Books.findAll({
 			order: [['updatedAt', 'DESC']]
 		}).then(function(books) {
-			res.render('all_books', {books : books});
+			res.render('books/all_books', {books : books});
 		});	
 	}
 });
@@ -68,7 +68,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/new', function(req, res, next) {
-	res.render('new_book', {book: Books.build()});
+	res.render('books/new_book', {book: Books.build()});
 });
 
 // GET individual book
@@ -107,7 +107,7 @@ router.get('/:id', function(req, res, next) {
 				book_id: req.params.id
 			}
 		}).then(function(data) {
-			res.render('book_detail', {book: book, loans: data});
+			res.render('books/book_detail', {book: book, loans: data});
 		});
 	});
 });
