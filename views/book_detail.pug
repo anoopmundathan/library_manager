@@ -31,10 +31,9 @@ block content
       tbody
         each loan in loans
           tr
+            td= loan.Book.title
             td
-              a(href='book_detail.html')= loan.Book.title
-            td
-              a(href='patron_detail.html')= loan.Patron.first_name
+              a(href="/patrons/" + loan.Patron.id)= loan.Patron.first_name
             td= loan.loaned_on
             td= loan.return_by
             td= loan.returned_on
