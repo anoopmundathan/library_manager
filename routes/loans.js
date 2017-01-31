@@ -7,8 +7,8 @@ var Books = require('../models').Books;
 var Patrons = require('../models').Patrons;
 var Loans = require('../models').Loans;
 
-// GET request
-router.get('/', function(req, res) {
+// GET - /loans
+router.get('/', function(req, res, next) {
 
 	Loans.belongsTo(Books, {foreignKey: 'book_id'});
 	Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
@@ -64,15 +64,8 @@ router.get('/', function(req, res) {
 	}	
 });
 
-// POST request 
-router.post('/', function(req, res) {
-	Loans.create(req.body).then(function(loan) {
-		res.redirect('/loans');
-	});
-});
-
-// GET loans/new
-router.get('/new', function(req, res) {
+// GET - /loans/new
+router.get('/new', function(req, res, next) {
 	
 	Books.findAll().then(function(books) {
 		Patrons.findAll().then(function(patrons) {
@@ -90,16 +83,39 @@ router.get('/new', function(req, res) {
 		}).catch(function(err) {
 
 		});
+	});	
+});
+
+// POST - /loans 
+router.post('/', function(req, res, next) {
+	Loans.create(req.body).then(function(loan) {
+		res.redirect('/loans');
 	});
-	
 });
 
-router.get('/overdue', function(req, res) {
-	res.render('overdue_loans');
+//GET - /loans/:id
+router.get('/:id', function(req, res, next) {
+	Loans.belongsTo(Books, {foreignKey: 'book_id'});
+	Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
+	Loans.findAll({
+			where: {id: {$eq: req.params.id}},
+			include: [
+				  		{model: Books,required: true}, 
+				  		{model: Patrons,required: true}
+				 	 ]
+		}).then(function(data) {
+			res.render('return_book', {loan: data});
+		});
 });
 
-router.get('/checked', function(req, res) {
-	res.render('checked_loans');
+//PUT - loans/:id
+router.put('/:id', function(req, res, next) {
+	Loans.findById(req.params.id).then(function(loan) {
+		return loan.update(req.body);
+	}).then(function() {
+		res.redirect('/loans');
+	});
 });
+
 
 module.exports = router;
