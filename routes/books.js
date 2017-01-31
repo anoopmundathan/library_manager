@@ -3,15 +3,18 @@ var router = express.Router();
 
 var Books = require('../models').Books;
 var Loans = require('../models').Loans;
-
+var Patrons = require('../models').Patrons;
 // GET /books
 router.get('/', function(req, res, next) {
 
 	if(req.query.filter === 'overdue') {
 		/*
-		 * SELECT * FROM LOANS A INNER JOIN BOOKS B ON
-		 * A.BOOK_ID = B.ID WHERE A.RETURN_BY < "TODAYS' DATE" AND
-		 * A.RETURNED_ON IS NULL
+		 * SELECT * 
+		 * FROM LOANS A 
+		 * INNER JOIN BOOKS B 
+		 * 		ON A.BOOK_ID = B.ID
+		 * WHERE 
+		 *		A.RETURN_BY < "TODAYS' DATE" AND A.RETURNED_ON IS NULL;
 		*/
 		Loans.belongsTo(Books, {foreignKey: 'book_id'});
 		Loans.findAll({
@@ -23,8 +26,12 @@ router.get('/', function(req, res, next) {
 
 	} else if(req.query.filter === 'checked_out') {
 		/*
-		 * SELECT * FROM LOANS A INNER JOIN BOOKS B ON A.BOOK_ID = B.ID 
-		 * WHERE A.RETURNED_ON IS NULL;
+		 * SELECT * 
+		 * FROM LOANS A 
+		 * INNER JOIN BOOKS B 
+		 *		ON A.BOOK_ID = B.ID 
+		 * WHERE 
+		 *		A.RETURNED_ON IS NULL;
 		*/
 		Loans.belongsTo(Books, {foreignKey: 'book_id'});
 		Loans.findAll({
@@ -64,8 +71,42 @@ router.get('/new', function(req, res, next) {
 
 // GET individual book
 router.get('/:id', function(req, res, next) {
+
+		/*
+		 * SELECT * FROM BOOKS WHERE ID = REQ.PARAMS.ID;
+		 */
+
 	Books.findById(req.params.id).then(function(book) {
-		res.render('book_detail', {book: book});
+		
+		/*
+		 * Set Associations
+		 */
+
+		Loans.belongsTo(Books, {foreignKey: 'book_id'});
+		Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
+
+		/*
+		 * SELECT * 
+		 * FROM LOANS A 
+		 * INNER JOIN BOOKS B 
+		 * 		ON A.BOOK_ID = B.ID
+		 * INNER JOIN PATRONS C
+		 *      ON A.PATRON_ID = C.ID 
+		 * WHERE 
+		 *      A.BOOK_ID = REQ.PARAMS.ID;
+		*/
+
+		Loans.findAll({
+			include: [
+					  {model: Books,required: true}, 
+					  {model: Patrons,required: true}
+					 ],
+			where: {
+				book_id: req.params.id
+			}
+		}).then(function(data) {
+			res.render('book_detail', {book: book, loans: data});
+		});
 	});
 });
 
