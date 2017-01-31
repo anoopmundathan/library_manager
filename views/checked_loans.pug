@@ -7,11 +7,11 @@ block content
       a.button(href='new_loan.html') Create New Loan
     p
       | Filters 
-      a(href='all_loans.html') All
+      a(href='/loans') All
       |  
-      a(href='overdue_loans.html') Overdue
+      a(href='/loans?filter=overdue') Overdue
       |  
-      a(href='checked_loans.html') Checked Out
+      a(href='/loans?filter=checked_out') Checked Out
     table
       thead
         tr
@@ -22,13 +22,14 @@ block content
           th Returned on
           th Action
       tbody
-        tr
-          td
-            a(href='book_detail.html') Emma
-          td
-            a(href='patron_detail.html') Dave McFarland
-          td 2015-12-10
-          td 2020-10-20
-          td
-          td
-            a.button(href='return_book.html') Return Book
+        each loan in loans
+          tr
+            td
+              a(href="/books/" + loan.Book.id)= loan.Book.title
+            td
+              a(href="patrons/" + loan.Patron.id)= loan.Patron.first_name
+            td= loan.loaned_on
+            td= loan.return_by
+            td= loan.returned_on
+            td
+              a.button(href='return_book.html') Return Book
