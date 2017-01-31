@@ -28,8 +28,8 @@ block content
               a(href="/books/" + loan.Book.id)= loan.Book.title
             td
               a(href="patrons/" + loan.Patron.id)= loan.Patron.first_name
-            td= loan.loaned_on
-            td= loan.return_by
-            td= loan.returned_on
+            td= loan.loanedOn()
+            td= loan.returnBy()
+            td= loan.returnedOn()
             td
               a.button(href='return_book.html') Return Book
