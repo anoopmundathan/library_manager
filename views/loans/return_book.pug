@@ -15,6 +15,6 @@ block content
       form(action="/loans/" + loan[0].id + "?_method=PUT" , method="post")
         p
           label(for='returned_on') Returned on:
-          input#returned_on(type='text', value=loan[0].returned_on, name='returned_on')
+          input#returned_on(type='text', value=returned_on, name='returned_on')
         p
           input(type='submit', value='Return Book')

@@ -113,7 +113,10 @@ router.get('/:id', function(req, res, next) {
 				  		{model: Patrons,required: true}
 				 	 ]
 		}).then(function(data) {
-			res.render('loans/return_book', {loan: data});
+			res.render('loans/return_book', {
+				loan: data,
+				returned_on: moment().format('YYYY-MM-DD')
+			});
 		}).catch(function(err) {
     		res.sendStatus(500);
   		});
