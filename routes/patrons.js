@@ -6,18 +6,21 @@ var Patrons = require('../models').Patrons;
 
 var router = express.Router();
 
-// GET all patrons
+// GET /patrons - List All Patrons
 router.get('/', function(req, res, next) {
-	Patrons.findAll({
-		order: [['createdAt', 'DESC']],
-	}).then(function(patrons) {
+	Patrons.findAll().then(function(patrons) {
 		res.render('patrons/all_patrons', {
 			patrons: patrons
 		});
 	});
 });
 
-// POST - create new patron
+// GET /patrons/new - New Patron
+router.get('/new', function(req, res, next) {
+	res.render('patrons/new_patron', {patron : Patrons.build()});
+});
+
+// POST /patrons - Create New Patron
 router.post('/', function(req, res, next) {
 	Patrons.create(req.body).then(function(patron) {
 		res.redirect('/patrons');
@@ -30,17 +33,10 @@ router.post('/', function(req, res, next) {
 		} else {
 			throw err;
 		}
-	}).catch(function(err) {
-		res.send(500);
-	})
+	});
 });
 
-// GET new book route
-router.get('/new', function(req, res, next) {
-	res.render('patrons/new_patron', {patron : Patrons.build()});
-});
-
-// GET individual patron
+// GET /patrons/:id - Individual Patron detail and Loan History
 router.get('/:id', function(req, res, next) {
 	Patrons.findById(req.params.id).then(function(patron) {
 		/*
@@ -63,15 +59,59 @@ router.get('/:id', function(req, res, next) {
 			include: [
 					  {model: Books,required: true}, 
 					  {model: Patrons,required: true}
-					 ],
+			],
 			where: {
 				patron_id: req.params.id
 			}
 		}).then(function(data) {
 			res.render('patrons/patron_detail', {patron: patron, loans: data});
-		});
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 		
 	});
 });
 
+// PUT /patrons/:id - Update Patron
+router.put('/:id', function(req, res, next) {
+	Patrons.findById(req.params.id).then(function(patron) {
+		return patron.update(req.body);
+	}).then(function() {
+		res.redirect('/patrons');
+	}).catch(function(err) {
+		/*
+		 * If required fields are not there, show error
+		 */
+		if(err.name === "SequelizeValidationError") {
+			/*
+	 		 * Set Associations
+	  		 */
+			Loans.belongsTo(Books, {foreignKey: 'book_id'});
+			Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
+			/*
+			 * Query again to get loan History of book
+			 */
+			Loans.findAll({
+				include: [
+					{model: Books,required: true}, 
+					{model: Patrons,required: true}
+				],
+				where: {
+					patron_id: req.params.id
+				}
+			}).then(function(data) {
+				req.body.id = req.params.id;
+				res.render('patrons/patron_detail', {
+					patron: req.body, 
+					loans: data,
+					errors: err.errors
+				});
+			}).catch(function(err) {
+    			res.sendStatus(500);
+  			}); // End of Loans.findAll
+		} else {
+			throw err;
+		} // End If
+	});
+});
 module.exports = router;

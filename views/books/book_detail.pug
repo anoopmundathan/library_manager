@@ -3,6 +3,7 @@ block content
   include ../nav
   body
     h1= 'Book : ' + book.title
+    include ../errors
     form(action="/books/" + book.id + "?_method=PUT" , method="post")
       p
         label(for='title') Title

@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 
@@ -7,13 +9,15 @@ var Books = require('../models').Books;
 var Patrons = require('../models').Patrons;
 var Loans = require('../models').Loans;
 
-// GET - /loans
+// GET /loans - List All Loans
 router.get('/', function(req, res, next) {
+
+	var filter = req.query.filter;
 
 	Loans.belongsTo(Books, {foreignKey: 'book_id'});
 	Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
 
-	if(req.query.filter === 'overdue') {
+	if(filter === 'overdue') {
 		/*
 		 * SELECT * 
 		 * FROM LOANS A 
@@ -23,7 +27,6 @@ router.get('/', function(req, res, next) {
 		 *		A.RETURN_BY < "TODAYS' DATE" AND A.RETURNED_ON IS NULL;
 		*/
 		Loans.findAll({
-			order: [['createdAt', 'DESC']],
 			where: {returned_on: {$eq: null}, return_by: {$lt: new Date()}},
 			include: [
 				  		{model: Books,required: true}, 
@@ -31,8 +34,10 @@ router.get('/', function(req, res, next) {
 				 	]
 		}).then(function(data) {
 			res.render('loans/overdue_loans', {loans: data});
-		});
-	} else if(req.query.filter === 'checked_out') {
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
+	} else if(filter === 'checked_out') {
 		/*
 		 * SELECT * 
 		 * FROM LOANS A 
@@ -42,7 +47,6 @@ router.get('/', function(req, res, next) {
 		 *		A.RETURNED_ON IS NULL;
 		*/
 		Loans.findAll({
-			order: [['createdAt', 'DESC']],
 			where: {returned_on: {$eq: null}},
 			include: [
 				  		{model: Books,required: true}, 
@@ -50,21 +54,24 @@ router.get('/', function(req, res, next) {
 				 	]
 		}).then(function(data) {
 			res.render('loans/checked_loans', {loans: data});
-		});
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 	} else {
 		Loans.findAll({
-			order: [['createdAt', 'DESC']],
 			include: [
 				  		{model: Books,required: true}, 
 				  		{model: Patrons,required: true}
 				 	]
 		}).then(function(loans) {
 			res.render('loans/all_loans', {loans: loans});
-		});
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 	}	
 });
 
-// GET - /loans/new
+// GET /loans/new - New Loan
 router.get('/new', function(req, res, next) {
 	
 	Books.findAll().then(function(books) {
@@ -81,18 +88,21 @@ router.get('/new', function(req, res, next) {
 			});
 
 		}).catch(function(err) {
-		});
+    		res.sendStatus(500);
+  		});
 	});	
 });
 
-// POST - /loans 
+// POST /loans  - Create New Loan
 router.post('/', function(req, res, next) {
 	Loans.create(req.body).then(function(loan) {
 		res.redirect('/loans');
-	});
+	}).catch(function(err) {
+    	res.sendStatus(500);
+  	});
 });
 
-//GET - /loans/:id
+//GET /loans/:id - Return Book
 router.get('/:id', function(req, res, next) {
 	Loans.belongsTo(Books, {foreignKey: 'book_id'});
 	Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
@@ -104,16 +114,20 @@ router.get('/:id', function(req, res, next) {
 				 	 ]
 		}).then(function(data) {
 			res.render('loans/return_book', {loan: data});
-		});
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 });
 
-//PUT - loans/:id
+//PUT /loans/:id - Return Book - Update 
 router.put('/:id', function(req, res, next) {
 	Loans.findById(req.params.id).then(function(loan) {
 		return loan.update(req.body);
 	}).then(function() {
 		res.redirect('/loans');
-	});
+	}).catch(function(err) {
+    	res.sendStatus(500);
+  	});
 });
 
 

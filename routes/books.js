@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 
@@ -5,7 +7,7 @@ var Books = require('../models').Books;
 var Loans = require('../models').Loans;
 var Patrons = require('../models').Patrons;
 
-// GET /books
+// GET /books - List All Books
 router.get('/', function(req, res, next) {
 
 	var filter = req.query.filter;
@@ -27,7 +29,9 @@ router.get('/', function(req, res, next) {
 			include: [{model: Books, required: true}]
 		}).then(function(loans) {
 			res.render('books/overdue_books', {loans: loans});
-		});
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 
 	} else if(filter === 'checked_out') {
 		/*
@@ -44,11 +48,11 @@ router.get('/', function(req, res, next) {
 			include: [{model: Books, required: true}]
 		}).then(function(loans) {
 			res.render('books/checked_books', {loans: loans});
-		});
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 	} else if(searchTitle !== undefined ) {
-		console.log('hello');
 		Books.findAll({
-			order: [['updatedAt', 'DESC']],
 			where: {
 				$or: [
 					{
@@ -60,24 +64,31 @@ router.get('/', function(req, res, next) {
 			}
 		}).then(function(books) {
 			res.render('books/all_books', {books : books});
-		});	
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 
 	} else {
-		Books.findAll({
-			order: [['updatedAt', 'DESC']]
-		}).then(function(books) {
+		Books.findAll().then(function(books) {
 			res.render('books/all_books', {books : books});
-		});	
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 	}
 });
 
-// POST /books
+// GET /books/new - New Book
+router.get('/new', function(req, res, next) {
+	res.render('books/new_book', {book: Books.build()});
+});
+
+// POST /books - Create New Book
 router.post('/', function(req, res, next) {
 	Books.create(req.body).then(function(book) {
 		res.redirect('/books');
 	}).catch(function(err) {
 		if(err.name === "SequelizeValidationError") {
-			res.render('new_book', {
+			res.render('books/new_book', {
 				book: Books.build(req.body),
 				errors: err.errors
 			});
@@ -85,27 +96,21 @@ router.post('/', function(req, res, next) {
 			throw err;
 		}
 	}).catch(function(err) {
-		res.send(500);
+		res.sendStatus(500);
 	})
 });
 
-router.get('/new', function(req, res, next) {
-	res.render('books/new_book', {book: Books.build()});
-});
 
-// GET individual book
+// GET /books/:id - Individual Book detail and Loan History
 router.get('/:id', function(req, res, next) {
 
 		/*
 		 * SELECT * FROM BOOKS WHERE ID = REQ.PARAMS.ID;
 		 */
-
 	Books.findById(req.params.id).then(function(book) {
-		
 		/*
 		 * Set Associations
 		 */
-
 		Loans.belongsTo(Books, {foreignKey: 'book_id'});
 		Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
 
@@ -130,18 +135,60 @@ router.get('/:id', function(req, res, next) {
 			}
 		}).then(function(data) {
 			res.render('books/book_detail', {book: book, loans: data});
-		});
+		}).catch(function(err) {
+    		res.sendStatus(500);
+  		});
 	});
 });
 
-/* PUT update a book */
+// PUT /books/:id - Update Book
 router.put('/:id', function(req, res, next) {
+	
 	Books.findById(req.params.id).then(function(book) {
 		return book.update(req.body);
 	}).then(function() {
 		res.redirect('/books');
+	}).catch(function(err) {
+		/*
+		 * If required fields are not there, show error
+		 */
+		if(err.name === "SequelizeValidationError") {
+
+			/*
+	 		 * Set Associations
+	  		 */
+			Loans.belongsTo(Books, {foreignKey: 'book_id'});
+			Loans.belongsTo(Patrons, {foreignKey: 'patron_id'});
+
+			/*
+			 * Query again to get loan History of book
+			 */
+			Loans.findAll({
+				include: [
+					{model: Books,required: true}, 
+					{model: Patrons,required: true}
+				],
+				where: {
+					book_id: req.params.id
+				}
+			}).then(function(data) {
+		
+				req.body.id = req.params.id;
+				res.render('books/book_detail', {
+					book: req.body, 
+					loans: data,
+					errors: err.errors
+				}); // End of res.render 
+			}).catch(function(err) {
+    			res.sendStatus(500);
+  			}); // End of Loans.findAll
+		} else {
+			throw err;
+		} // End If
+
+	}).catch(function(err) {
+		res.sendStatus(500);
 	});
 });
-
 
 module.exports = router;

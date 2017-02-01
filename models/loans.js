@@ -13,12 +13,15 @@ module.exports = function(sequelize, DataTypes) {
     loaned_on: DataTypes.DATE,
     return_by: DataTypes.DATE,
     returned_on: DataTypes.DATE
-  }, {
+  }, 
+  {
+    timestamps: false,
     classMethods: {
       associate: function(models) {
         // associations can be defined here
       }
     },
+
     instanceMethods : {
       loanedOn: function() {
         return dateFormat(this.loaned_on, "yyyy-mm-dd-hh:mm:ss");
