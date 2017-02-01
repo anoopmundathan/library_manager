@@ -4,10 +4,14 @@ var router = express.Router();
 var Books = require('../models').Books;
 var Loans = require('../models').Loans;
 var Patrons = require('../models').Patrons;
+
 // GET /books
 router.get('/', function(req, res, next) {
 
-	if(req.query.filter === 'overdue') {
+	var filter = req.query.filter;
+	var searchTitle = req.query.searchTitle;
+
+	if(filter === 'overdue') {
 		/*
 		 * SELECT * 
 		 * FROM LOANS A 
@@ -17,6 +21,7 @@ router.get('/', function(req, res, next) {
 		 *		A.RETURN_BY < "TODAYS' DATE" AND A.RETURNED_ON IS NULL;
 		*/
 		Loans.belongsTo(Books, {foreignKey: 'book_id'});
+
 		Loans.findAll({
 			where: {returned_on: {$eq: null}, return_by: {$lt: new Date()}},
 			include: [{model: Books, required: true}]
@@ -24,7 +29,7 @@ router.get('/', function(req, res, next) {
 			res.render('books/overdue_books', {loans: loans});
 		});
 
-	} else if(req.query.filter === 'checked_out') {
+	} else if(filter === 'checked_out') {
 		/*
 		 * SELECT * 
 		 * FROM LOANS A 
@@ -40,6 +45,23 @@ router.get('/', function(req, res, next) {
 		}).then(function(loans) {
 			res.render('books/checked_books', {loans: loans});
 		});
+	} else if(searchTitle !== undefined ) {
+		console.log('hello');
+		Books.findAll({
+			order: [['updatedAt', 'DESC']],
+			where: {
+				$or: [
+					{
+						title: {
+							$like: '%' + searchTitle + '%'
+						}
+					}
+				]
+			}
+		}).then(function(books) {
+			res.render('books/all_books', {books : books});
+		});	
+
 	} else {
 		Books.findAll({
 			order: [['updatedAt', 'DESC']]

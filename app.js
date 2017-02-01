@@ -1,9 +1,9 @@
 'use strict';
+
 var express = require('express');
 var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 var path = require('path');
-
 
 var sequelize = require('./models').sequelize;
 var books = require('./routes/books');
@@ -23,7 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
-// app.set('views', './views');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 

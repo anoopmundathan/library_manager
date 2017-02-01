@@ -92,3 +92,12 @@ input {
 input[type=text], select {
   margin-left: 10px;
 }
+
+/* Added these extra style */
+span.title {
+  margin: 0;
+}
+
+#search-button {
+  margin-left: 10px;
+}

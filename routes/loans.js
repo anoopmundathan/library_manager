@@ -81,7 +81,6 @@ router.get('/new', function(req, res, next) {
 			});
 
 		}).catch(function(err) {
-
 		});
 	});	
 });
